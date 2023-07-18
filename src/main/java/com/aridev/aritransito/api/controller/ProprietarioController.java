@@ -2,6 +2,7 @@ package com.aridev.aritransito.api.controller;
 
 import com.aridev.aritransito.domain.model.Proprietario;
 import com.aridev.aritransito.domain.repository.ProprietarioRepository;
+import com.aridev.aritransito.domain.service.RegistroProprietarioService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.validation.Valid;
@@ -19,8 +20,9 @@ import java.util.List;
 @RequestMapping("/proprietarios")
 public class ProprietarioController {
 
-    @Autowired
-    private ProprietarioRepository proprietarioRepository;
+
+    private final ProprietarioRepository proprietarioRepository;
+    private final RegistroProprietarioService registroProprietarioService;
 
     @GetMapping
     public List<Proprietario> listar() {
@@ -37,18 +39,18 @@ public class ProprietarioController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Proprietario adicionar(@Valid @RequestBody Proprietario proprietario) {
-        return proprietarioRepository.save(proprietario);
+        return registroProprietarioService.salvar(proprietario);
     }
 
     @PutMapping("/{proprietarioId}")
     public ResponseEntity<Proprietario> atualizar(@PathVariable Long proprietarioId,
-                                                  @RequestBody Proprietario proprietario) {
+                                                 @Valid @RequestBody Proprietario proprietario) {
         if (!proprietarioRepository.existsById(proprietarioId)) {
             return ResponseEntity.notFound().build();
         }
 
         proprietario.setId(proprietarioId);
-        Proprietario proprietarioAtualizado = proprietarioRepository.save(proprietario);
+        Proprietario proprietarioAtualizado = registroProprietarioService.salvar(proprietario);
 
         return ResponseEntity.ok(proprietarioAtualizado);
     }
@@ -59,7 +61,7 @@ public class ProprietarioController {
             return ResponseEntity.notFound().build();
         }
 
-        proprietarioRepository.deleteById(proprietarioId);
+        registroProprietarioService.excluir(proprietarioId);
         return ResponseEntity.noContent().build();
     }
 
