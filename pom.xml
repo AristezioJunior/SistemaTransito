@@ -50,7 +50,15 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
 
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-mysql</artifactId>
+		</dependency>
 		<!-- Dependencia para aceitar requerimento em xml (Content Negotiation) -->
 <!--		<dependency>-->
 <!--			<groupId>com.fasterxml.jackson.dataformat</groupId>-->
