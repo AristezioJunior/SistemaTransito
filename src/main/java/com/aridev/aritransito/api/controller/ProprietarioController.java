@@ -1,5 +1,6 @@
 package com.aridev.aritransito.api.controller;
 
+import com.aridev.aritransito.domain.exception.NegocioException;
 import com.aridev.aritransito.domain.model.Proprietario;
 import com.aridev.aritransito.domain.repository.ProprietarioRepository;
 import com.aridev.aritransito.domain.service.RegistroProprietarioService;
@@ -64,5 +65,11 @@ public class ProprietarioController {
         registroProprietarioService.excluir(proprietarioId);
         return ResponseEntity.noContent().build();
     }
+
+    @ExceptionHandler(NegocioException.class)
+    public ResponseEntity<String> capturar(NegocioException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
 
 }
