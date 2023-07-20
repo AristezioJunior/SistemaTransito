@@ -53,5 +53,5 @@ public class Veiculo {
     private OffsetDateTime dataCadastro;
 
     @JsonProperty(access = Access.READ_ONLY)
-    private LocalDateTime dataApreensao;
+    private OffsetDateTime dataApreensao;
 }

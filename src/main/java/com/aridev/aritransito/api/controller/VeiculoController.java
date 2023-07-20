@@ -1,11 +1,13 @@
 package com.aridev.aritransito.api.controller;
 
+import com.aridev.aritransito.api.model.VeiculoModel;
 import com.aridev.aritransito.domain.exception.NegocioException;
 import com.aridev.aritransito.domain.model.Veiculo;
 import com.aridev.aritransito.domain.repository.VeiculoRepository;
 import com.aridev.aritransito.domain.service.RegistroVeiculoService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +19,10 @@ import java.util.List;
 @RequestMapping("/veiculos")
 public class VeiculoController {
 
-    private VeiculoRepository veiculoRepository;
+    private final VeiculoRepository veiculoRepository;
     private final RegistroVeiculoService registroVeiculoService;
+    private final ModelMapper modelMapper;
+
 
     @GetMapping
     public List<Veiculo> listar() {
@@ -26,8 +30,9 @@ public class VeiculoController {
     }
 
     @GetMapping("/{veiculoId}")
-    public ResponseEntity<Veiculo> buscar(@PathVariable Long veiculoId) {
+    public ResponseEntity<VeiculoModel> buscar(@PathVariable Long veiculoId) {
         return veiculoRepository.findById(veiculoId)
+                .map(veiculo -> modelMapper.map(veiculo, VeiculoModel.class))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
