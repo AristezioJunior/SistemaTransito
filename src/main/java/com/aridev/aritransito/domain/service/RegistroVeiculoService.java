@@ -1,5 +1,6 @@
 package com.aridev.aritransito.domain.service;
 
+import com.aridev.aritransito.domain.exception.EntidadeNaoEncontradaException;
 import com.aridev.aritransito.domain.exception.NegocioException;
 import com.aridev.aritransito.domain.model.Proprietario;
 import com.aridev.aritransito.domain.model.StatusVeiculo;
@@ -9,7 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @AllArgsConstructor
@@ -22,7 +22,7 @@ public class RegistroVeiculoService {
 
     public Veiculo buscar(Long veiculoId) {
         return veiculoRepository.findById(veiculoId)
-                .orElseThrow(() -> new NegocioException("Veículo não encontrado"));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Veículo não encontrado"));
     }
 
     @Transactional
