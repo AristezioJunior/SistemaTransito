@@ -1,5 +1,8 @@
 package com.aridev.aritransito.api.controller;
 
+import com.aridev.aritransito.api.assembler.ProprietarioAssembler;
+import com.aridev.aritransito.api.model.ProprietarioModel;
+import com.aridev.aritransito.api.model.input.ProprietarioInput;
 import com.aridev.aritransito.domain.exception.NegocioException;
 import com.aridev.aritransito.domain.model.Proprietario;
 import com.aridev.aritransito.domain.repository.ProprietarioRepository;
@@ -24,23 +27,29 @@ public class ProprietarioController {
 
     private final ProprietarioRepository proprietarioRepository;
     private final RegistroProprietarioService registroProprietarioService;
+    private final ProprietarioAssembler proprietarioAssembler;
 
     @GetMapping
-    public List<Proprietario> listar() {
-        return proprietarioRepository.findAll();
+    public List<ProprietarioModel> listar() {
+        return proprietarioAssembler.toCollectionModel(proprietarioRepository.findAll());
     }
 
     @GetMapping("/{proprietarioId}")
-    public ResponseEntity<Proprietario> buscar(@PathVariable Long proprietarioId) {
+    public ResponseEntity<ProprietarioModel> buscar(@PathVariable Long proprietarioId) {
         return proprietarioRepository.findById(proprietarioId)
+                .map(proprietarioAssembler::toModel)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Proprietario adicionar(@Valid @RequestBody Proprietario proprietario) {
-        return registroProprietarioService.salvar(proprietario);
+    public ProprietarioModel adicionar(@Valid @RequestBody ProprietarioInput proprietarioInput) {
+        Proprietario novoProprietario = proprietarioAssembler.toEntity(proprietarioInput);
+
+        Proprietario proprietarioCadastrado = registroProprietarioService.salvar(novoProprietario);
+
+        return proprietarioAssembler.toModel(proprietarioCadastrado);
     }
 
     @PutMapping("/{proprietarioId}")
